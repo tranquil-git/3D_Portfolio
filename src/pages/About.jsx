@@ -7,7 +7,7 @@ const About = () => {
             <h1 className="head-text">
                 Hello, I'm{' '}
                 <span className="blue-gradient_text font-semibold drop-shadow">
-                    Thanh
+                    Jane
                 </span>{' '}
                 👋
             </h1>

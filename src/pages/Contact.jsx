@@ -1,8 +1,9 @@
 import { Suspense, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 
 import Loader from '../components/Loader';
-import Fox from '../models/Fox';
+import Hamster from '../models/Hamster';
 import { socialLinks } from '../constants';
 
 // Replace with the address you want messages delivered to.
@@ -52,7 +53,7 @@ const Contact = () => {
                             type="text"
                             name="name"
                             className="input"
-                            placeholder="John Doe"
+                            placeholder="Jance"
                             required
                             value={form.name}
                             onChange={handleChange}
@@ -66,7 +67,7 @@ const Contact = () => {
                             type="email"
                             name="email"
                             className="input"
-                            placeholder="john@gmail.com"
+                            placeholder="jance@gmail.com"
                             required
                             value={form.email}
                             onChange={handleChange}
@@ -123,26 +124,41 @@ const Contact = () => {
                 </div>
             </div>
 
-            <div className="lg:w-1/2 w-full lg:h-auto md:h-[550px] h-[350px]">
+            <div className="lg:w-1/2 w-full lg:h-auto md:h-[550px] h-[350px] relative">
                 <Canvas
                     camera={{
-                        position: [0, 0, 5],
-                        fov: 75,
+                        position: [0, 0, 3],
+                        fov: 45,
                         near: 0.1,
                         far: 1000,
                     }}
                 >
-                    <directionalLight intensity={2.5} position={[0, 0, 1]} />
-                    <ambientLight intensity={0.5} />
+                    {/* Lit from a few directions so the dragon stays readable
+                        whichever way the visitor spins it. */}
+                    <directionalLight intensity={2.5} position={[2, 2, 3]} />
+                    <directionalLight intensity={1.2} position={[-2, 1, -3]} />
+                    <ambientLight intensity={0.8} />
+                    <hemisphereLight
+                        skyColor="#b1e1ff"
+                        groundColor="#000000"
+                        intensity={0.5}
+                    />
 
                     <Suspense fallback={<Loader />}>
-                        <Fox
-                            currentAnimation={currentAnimation}
-                            position={[0.5, 0.35, 0]}
-                            rotation={[12.6, -0.6, 0]}
-                            scale={[0.5, 0.5, 0.5]}
+                        <Hamster
+                            position={[0, 0, 0]}
+                            rotation={[0, -0.6, 0]}
+                            scale={[3.25, 3.25, 3.25]}
                         />
                     </Suspense>
+
+                    <OrbitControls
+                        makeDefault
+                        enablePan={false}
+                        enableZoom={false}
+                        minPolarAngle={Math.PI / 6}
+                        maxPolarAngle={Math.PI - Math.PI / 6}
+                    />
                 </Canvas>
             </div>
         </section>
