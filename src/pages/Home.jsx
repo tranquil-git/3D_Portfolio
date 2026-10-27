@@ -17,6 +17,9 @@ const Home = () => {
     const [isRotating, setIsRotating] = useState(false);
     const [currentStage, setCurrentStage] = useState(1);
     const [isPlayingMusic, setIsPlayingMusic] = useState(true);
+    const [isTabVisible, setIsTabVisible] = useState(
+        () => document.visibilityState !== 'hidden'
+    );
 
     useEffect(() => {
         const audio = new Audio(sakura);
@@ -31,10 +34,20 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
+        const onVisibilityChange = () =>
+            setIsTabVisible(document.visibilityState !== 'hidden');
+
+        document.addEventListener('visibilitychange', onVisibilityChange);
+        return () =>
+            document.removeEventListener('visibilitychange', onVisibilityChange);
+    }, []);
+
+    useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        if (!isPlayingMusic) {
+        // Keep the island quiet while the visitor is on another tab.
+        if (!isPlayingMusic || !isTabVisible) {
             audio.pause();
             return;
         }
@@ -63,7 +76,7 @@ const Home = () => {
         });
 
         return () => unlisten();
-    }, [isPlayingMusic]);
+    }, [isPlayingMusic, isTabVisible]);
 
     const adjustIslandForScreenSize = () => {
         let screenScale, screenPosition;
